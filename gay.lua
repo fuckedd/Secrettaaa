@@ -150,36 +150,44 @@ listlayout = Instance.new("UIListLayout",scroll_3)
 selectChat = Instance.new("TextButton")
 selectJoin = Instance.new("TextButton")
 
-function randomString()
-	local length = math.random(10,20)
-	local array = {}
-	for i = 1, length do
-		array[i] = string.char(math.random(32, 126))
-	end
-	return table.concat(array)
+-- Function to create a random string
+local function randomString()
+    local characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    local length = 12
+    local result = ""
+    for i = 1, length do
+        local randIndex = math.random(1, #characters)
+        result = result .. characters:sub(randIndex, randIndex)
+    end
+    return result
 end
 
-PARENT = nil
+-- Create the Main ScreenGui
+local Main = Instance.new("ScreenGui")
+Main.Name = randomString()
+
+-- Set ScreenGui properties to make it invisible
+Main.ResetOnSpawn = false
+Main.Enabled = false
+
+-- Set the parent based on the conditions you provided
+local hiddenUI
+
 if get_hidden_gui or gethui then
-	local hiddenUI = get_hidden_gui or gethui
-	local Main = Instance.new("ScreenGui")
-	Main.Name = randomString()
-	Main.Parent = hiddenUI()
-	PARENT = Main
+    hiddenUI = get_hidden_gui or gethui
+    Main.Parent = hiddenUI()
 elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
-	local Main = Instance.new("ScreenGui")
-	Main.Name = randomString()
-	syn.protect_gui(Main)
-	Main.Parent = COREGUI
-	PARENT = Main
+    syn.protect_gui(Main)
+    Main.Parent = COREGUI
 elseif COREGUI:FindFirstChild('RobloxGui') then
-	PARENT = COREGUI.RobloxGui
+    hiddenUI = COREGUI.RobloxGui
+    Main.Parent = hiddenUI
 else
-	local Main = Instance.new("ScreenGui")
-	Main.Name = randomString()
-	Main.Parent = COREGUI
-	PARENT = Main
+    Main.Parent = COREGUI
 end
+
+-- Assign the parent to PARENT
+PARENT = Main
 
 shade1 = {}
 shade2 = {}
@@ -4278,7 +4286,7 @@ CMDs[#CMDs + 1] = {NAME = 'hideguis', DESC = 'Hides any GUIs in PlayerGui'}
 CMDs[#CMDs + 1] = {NAME = 'unhideguis', DESC = 'Undoes hideguis'}
 CMDs[#CMDs + 1] = {NAME = 'guidelete', DESC = 'Enables backspace to delete GUI'}
 CMDs[#CMDs + 1] = {NAME = 'unguidelete / noguidelete', DESC = 'Disables guidelete'}
-CMDs[#CMDs + 1] = {NAME = 'cmd', DESC = 'Hides the main IY GUI'}
+CMDs[#CMDs + 1] = {NAME = 'hideiy', DESC = 'Hides the main IY GUI'}
 CMDs[#CMDs + 1] = {NAME = 'showiy / unhideiy', DESC = 'Shows IY again'}
 CMDs[#CMDs + 1] = {NAME = 'keepiy', DESC = 'Auto execute IY when you teleport through servers'}
 CMDs[#CMDs + 1] = {NAME = 'unkeepiy', DESC = 'Disable keepiy'}
@@ -7524,16 +7532,16 @@ addcmd('unguidelete',{'noguidelete'},function(args, speaker)
 end)
 
 local wasStayOpen = StayOpen
-addcmd('cmd', {}, function(args, speaker)
-    isHidden = true
-    wasStayOpen = StayOpen
-    if StayOpen == true then
-        StayOpen = false
-        On.BackgroundTransparency = 1
-    end
-    minimizeNum = 0
-    minimizeHolder()
-    -- The notification code has been removed
+addcmd('hideiy',{},function(args, speaker)
+	isHidden = true
+	wasStayOpen = StayOpen
+	if StayOpen == true then
+		StayOpen = false
+		On.BackgroundTransparency = 1
+	end
+	minimizeNum = 0
+	minimizeHolder()
+	if not (args[1] and tostring(args[1]) == 'nonotify') then notify('IY Hidden','You can press the prefix key to access the command bar') end
 end)
 
 addcmd('showiy',{'unhideiy'},function(args, speaker)
