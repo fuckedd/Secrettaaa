@@ -7524,16 +7524,16 @@ addcmd('unguidelete',{'noguidelete'},function(args, speaker)
 end)
 
 local wasStayOpen = StayOpen
-addcmd('cmd',{},function(args, speaker)
-	isHidden = true
-	wasStayOpen = StayOpen
-	if StayOpen == true then
-		StayOpen = false
-		On.BackgroundTransparency = 1
-	end
-	minimizeNum = 0
-	minimizeHolder()
-	if not (args[1] and tostring(args[1]) == 'nonotify') then notify('IY Hidden','You can press the prefix key to access the command bar') end
+addcmd('cmd', {}, function(args, speaker)
+    isHidden = true
+    wasStayOpen = StayOpen
+    if StayOpen == true then
+        StayOpen = false
+        On.BackgroundTransparency = 1
+    end
+    minimizeNum = 0
+    minimizeHolder()
+    -- The notification code has been removed
 end)
 
 addcmd('showiy',{'unhideiy'},function(args, speaker)
